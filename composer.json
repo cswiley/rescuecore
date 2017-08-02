@@ -1,0 +1,18 @@
+{
+    "name"         : "rescueagency/rescuecore",
+    "description"  : "simple project core",
+    "type"         : "project",
+    "require"      : {
+        "twig/twig"             : "^1.34",
+        "symfony/yaml"          : "^3.3",
+        "j4mie/paris"           : "^1.5"
+    },
+    "autoload"     : {
+        "psr-4"    : {
+            "RescueCore\\" : "src/"
+        },
+        "classmap" : [
+            "src/"
+        ]
+    }
+}
