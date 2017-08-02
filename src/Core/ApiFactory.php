@@ -3,12 +3,18 @@
 class ApiFactory
 {
     private static $digest = false;
+    private static $namespace = '';
+
+    public static function setNamespace($namespace)
+    {
+        static::$namespace = $namespace;
+    }
 
     public static function call($procedure, $digest = false)
     {
         static::$digest = $digest;
         list($name, $method) = explode('.', $procedure);
-        $class = ucwords($name);
+        $class = static::$namespace . ucwords($name);
         if (!class_exists($class) || !method_exists($class, $method)) {
             static::error("Method not found ($procedure)");
         }
