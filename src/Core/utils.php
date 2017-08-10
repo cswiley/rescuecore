@@ -52,6 +52,10 @@ function post($key = false, $default = false)
 {
     $data = $_POST;
 
+    if (empty($_POST)) {
+        $data = json_decode(file_get_contents('php://input'), true);
+    }
+
     if (! $key) {
         return $data;
     }
@@ -72,7 +76,11 @@ function get($key = false, $default = false)
 
 function request($key = false, $default = false)
 {
-    $data = $_REQUEST;
+    $data = post();
+
+    if (empty($data)) {
+        $data = get();
+    }
 
     if (!$key) {
         return $data;
