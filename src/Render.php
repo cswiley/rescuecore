@@ -14,9 +14,8 @@ class Render
 
         $fullPath = VIEWS_PATH . '/' . $filePath;
         $data     = empty($data) ? [] : $data;
-        $data     = static::addConfigData($data);
-        $data     = static::addSiteData($data);
-        $data     = static::addEnvData($data);
+
+        $data = static::addGenericPageData($data);
 
         ob_start(); // turn on output buffering
         extract($data);
@@ -31,6 +30,16 @@ class Render
         return true;
     }
 
+    private static function addGenericPageData($data)
+    {
+        $data                = static::addConfigData($data);
+        $data                = static::addSiteData($data);
+        $data                = static::addEnvData($data);
+        $data['current_url'] = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+        return $data;
+    }
+
     private static function twig()
     {
         return $GLOBALS['TWIG'];
@@ -42,7 +51,7 @@ class Render
             $code = $html;
         }
 
-        $showCode = empty($html) && ! empty($code);
+        $showCode = empty($html) && !empty($code);
 
         return static::partial('styleguide/code', [
             'title'    => $title,
@@ -69,9 +78,7 @@ class Render
         if (empty($data)) {
             $data = [];
         }
-        $data     = static::addConfigData($data);
-        $data     = static::addSiteData($data);
-        $data     = static::addEnvData($data);
+        $data     = static::addGenericPageData($data);
         $file     = 'partials/' . $file;
         $ext      = '.twig';
         $template = Twig::get(TWIG_PATH)->load($file . $ext);
@@ -239,10 +246,7 @@ class Render
             $data = array_merge($pageData, $data);
         }
 
-        $data = static::addConfigData($data);
-        $data = static::addSiteData($data);
-        $data = static::addEnvData($data);
-
+        $data = static::addGenericPageData($data);
 
         $html = static::partial("admin/header", $data, true);
         $html .= static::view($path, $data, true);
